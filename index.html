@@ -15,8 +15,8 @@ body{
 }
 
 /* Titles */
-h1, h2{
-  text-shadow: 0 3px 8px rgba(0,0,0,.3);
+h1,h2{
+  text-shadow:0 3px 8px rgba(0,0,0,.3);
 }
 
 h1{
@@ -29,7 +29,7 @@ h2{
   font-size:1.8rem;
 }
 
-/* Buttons */
+/* Button */
 .buttons{
   margin-top:25px;
   position:relative;
@@ -45,20 +45,20 @@ button{
   margin:0 10px;
 }
 
+/* YES / NO buttons */
 #yes{
   background:#ff0033;
   color:white;
+  display:none;
 }
 
 #no{
   background:white;
   color:#ff0033;
-  position:absolute;
 }
 
 /* Message box */
 #message{
-  display:none;
   font-size:1.6rem;
   margin:20px auto;
   padding:12px 18px;
@@ -69,7 +69,15 @@ button{
   font-weight:bold;
 }
 
-/* Hearts / Chocolate emojis */
+/* NO message box */
+#noMessage{
+  font-size:1.5rem;
+  margin-top:15px;
+  color:#5a2d0c;
+  font-weight:bold;
+}
+
+/* Emojis */
 .emoji{
   position:fixed;
   bottom:-30px;
@@ -85,7 +93,7 @@ button{
 </head>
 <body>
 
-<h1>E roju Chocolate Day kadha ❤️ Happy Chocolate Day</h1>
+<h1>E roju Chocolate Day ❤️ Happy Chocolate Day</h1>
 <h2>Chocolate kavala ?</h2>
 
 <div class="buttons">
@@ -94,66 +102,81 @@ button{
 </div>
 
 <div id="message"></div>
+<div id="noMessage"></div>
 
 <script>
-const messages=[
-  "Navvithe chocolate konistha 🍫😜",
-  "Unte ready 😎🍫",
-  "I love you chepithe konistha ❤️?",
-  "Ayyo 😅 chocolate lekunda ra 😜",
-  "Siggu padindi 😁",
-  "Next time double chocolate 🤭🍫🍫"
-];
-
-let msgIndex=0;
-
 const messageBox=document.getElementById("message");
 const yesBtn=document.getElementById("yes");
 const noBtn=document.getElementById("no");
+const noMsgBox=document.getElementById("noMessage");
 
-/* NO BUTTON – FUN MOVEMENT */
-function moveNoButton(){
-  const padding=20;
-  const maxX=window.innerWidth-noBtn.offsetWidth-padding;
-  const maxY=window.innerHeight-noBtn.offsetHeight-padding;
-  const x=Math.random()*maxX;
-  const y=Math.random()*maxY;
-  noBtn.style.left=x+"px";
-  noBtn.style.top=y+"px";
-}
-noBtn.addEventListener("mouseenter",moveNoButton);
-noBtn.addEventListener("touchstart",moveNoButton);
+/* Steps for YES */
+const steps=[
+  {text:"Navvithe chocolate konistha 🍫😜", delay:1000, showYes:false},
+  {text:"Navvi unte YES meedha click chey 😉", delay:10000, showYes:true},
+  {text:"Inkosari navvithi 2 chocolate istha 🍫🍫", delay:5000, showYes:false},
+  {text:"Navvi unte YES kottu chocolates ready gaa unnayi 😎🍫", delay:5000, showYes:true},
+  {text:"I love you chepithe 3 chocolate istha ❤️🍫🍫🍫", delay:5000, showYes:false},
+  {text:"Cheppakapothe mundhu 2 chocolate kuda raavu 😜", delay:3000, showYes:false},
+  {text:"Baaga alochinchu, force emi ledu 😏", delay:3000, showYes:false},
+  {text:"Love you cheppi YES click chey 😉", delay:5000, showYes:true},
+  {text:"I love you too! Nuve chocolate laa unnav 😘 Inka neeku endhuku chocolate 😜 nenu ye ninnu thinestha 😂", delay:7000, showYes:false}
+];
 
-/* Function to start messages and emoji rain */
-function startFun(){
-  document.querySelector(".buttons").style.display="none";
+let stepIndex=0;
 
-  /* Messages loop */
-  function showMsg(){
-    messageBox.textContent=messages[msgIndex];
-    messageBox.style.display="block";
-    setTimeout(()=>messageBox.style.display="none",4000);
-    msgIndex=(msgIndex+1)%messages.length;
+/* Function to show YES sequence */
+function nextStep(){
+  if(stepIndex>=steps.length) return;
+  const step=steps[stepIndex];
+  messageBox.textContent=step.text;
+
+  if(step.showYes){
+    yesBtn.style.display="inline-block";
+  }else{
+    yesBtn.style.display="none";
   }
-  showMsg();
-  setInterval(showMsg,6000);
 
-  /* Emoji rain */
-  setInterval(()=>{
-    const e=document.createElement("div");
-    e.className="emoji";
-    e.innerText=Math.random()>0.5?"🍫":"❤️";
-    e.style.left=Math.random()*100+"vw";
-    e.style.animationDuration=(3+Math.random()*3)+"s";
-    document.body.appendChild(e);
-    setTimeout(()=>e.remove(),6000);
-  },300);
+  setTimeout(()=>{
+    stepIndex++;
+    nextStep();
+  },step.delay);
 }
 
 /* YES click */
-yesBtn.onclick=startFun;
-/* NO click also triggers same behavior */
-noBtn.onclick=startFun;
+yesBtn.onclick=()=>{
+  stepIndex++;
+  nextStep();
+};
+
+/* NO button messages (constant) */
+const noMessages=[
+  "Inkosari alochinchu 😜 Chocolate chala unnayi naa daggara 🍫",
+  "Ayyo, chudandi chocolate ready 😎🍫",
+  "Nuvvu navvite life set 😁🍫",
+  "Siggu padindi chalu 😏, chocolate lekunda ra 😅"
+];
+let noIndex=0;
+
+/* Show NO messages every 6 sec */
+setInterval(()=>{
+  noMsgBox.textContent=noMessages[noIndex];
+  noIndex=(noIndex+1)%noMessages.length;
+},6000);
+
+/* Emoji rain */
+setInterval(()=>{
+  const e=document.createElement("div");
+  e.className="emoji";
+  e.innerText=Math.random()>0.5?"🍫":"❤️";
+  e.style.left=Math.random()*100+"vw";
+  e.style.animationDuration=(3+Math.random()*3)+"s";
+  document.body.appendChild(e);
+  setTimeout(()=>e.remove(),6000);
+},300);
+
+/* Start YES sequence after page load */
+nextStep();
 </script>
 
 </body>
