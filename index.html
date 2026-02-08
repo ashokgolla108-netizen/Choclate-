@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>E roju Chocolate Day ❤️ Happy Chocolate Day</title>
+<title>Happy Chocolate Day ❤️</title>
 <style>
 body{
   margin:0;
@@ -29,7 +29,7 @@ h2{
   font-size:1.8rem;
 }
 
-/* Button */
+/* Buttons */
 .buttons{
   margin-top:25px;
   position:relative;
@@ -93,8 +93,8 @@ button{
 </head>
 <body>
 
-<h1>E roju Chocolate Day ❤️ Happy Chocolate Day</h1>
-<h2>Chocolate kavala ?</h2>
+<h1>Happy Chocolate Day ❤️</h1>
+<h2>Chocolate kavali ?</h2>
 
 <div class="buttons">
   <button id="yes">Yes 🍫</button>
@@ -105,78 +105,80 @@ button{
 <div id="noMessage"></div>
 
 <script>
-const messageBox=document.getElementById("message");
-const yesBtn=document.getElementById("yes");
-const noBtn=document.getElementById("no");
-const noMsgBox=document.getElementById("noMessage");
+const yesBtn = document.getElementById("yes");
+const noBtn = document.getElementById("no");
+const messageBox = document.getElementById("message");
+const noMsgBox = document.getElementById("noMessage");
 
-/* Steps for YES */
-const steps=[
-  {text:"Navvithe chocolate konistha 🍫😜", delay:1000, showYes:false},
+/* YES sequence popups */
+const yesSteps=[
+  {text:"Navvithe chocolate istha 🍫😜", delay:1000, showYes:false},
   {text:"Navvi unte YES meedha click chey 😉", delay:10000, showYes:true},
-  {text:"Inkosari navvithi 2 chocolate istha 🍫🍫", delay:5000, showYes:false},
-  {text:"Navvi unte YES kottu chocolates ready gaa unnayi 😎🍫", delay:5000, showYes:true},
-  {text:"I love you chepithe 3 chocolate istha ❤️🍫🍫🍫", delay:5000, showYes:false},
-  {text:"Cheppakapothe mundhu 2 chocolate kuda raavu 😜", delay:3000, showYes:false},
-  {text:"Baaga alochinchu, force emi ledu 😏", delay:3000, showYes:false},
-  {text:"Love you cheppi YES click chey 😉", delay:5000, showYes:true},
-  {text:"I love you too! Nuve chocolate laa unnav 😘 Inka neeku endhuku chocolate 😜 nenu ye ninnu thinestha 😂", delay:7000, showYes:false}
+  {text:"Inkosari navvithi 2 chocolates 🍫🍫", delay:1000, showYes:false},
+  {text:"Navvi unte YES kottu chocolates ready gaa unnayi 😎🍫", delay:10000, showYes:true},
+  {text:"I love you chepithe 10 chocolates ❤️🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫", delay:1000, showYes:false},
+  {text:"Chocolate ready unnayi twaraga YES click chey 😜", delay:5000, showYes:true},
+  {text:"Nuve chocolate laa unna neeku endhuku chocolate 😜 nenu ye ninnu thinestha 😂", delay:7000, showYes:false}
 ];
 
-let stepIndex=0;
+let yesIndex = 0;
 
 /* Function to show YES sequence */
-function nextStep(){
-  if(stepIndex>=steps.length) return;
-  const step=steps[stepIndex];
-  messageBox.textContent=step.text;
+function nextYesStep(){
+  if(yesIndex >= yesSteps.length) return;
+  const step = yesSteps[yesIndex];
+  messageBox.textContent = step.text;
 
   if(step.showYes){
-    yesBtn.style.display="inline-block";
+    yesBtn.style.display = "inline-block";
   }else{
-    yesBtn.style.display="none";
+    yesBtn.style.display = "none";
   }
 
   setTimeout(()=>{
-    stepIndex++;
-    nextStep();
-  },step.delay);
+    yesIndex++;
+    nextYesStep();
+  }, step.delay);
 }
 
-/* YES click */
-yesBtn.onclick=()=>{
-  stepIndex++;
-  nextStep();
+/* YES click moves to next step immediately */
+yesBtn.onclick = () => {
+  yesIndex++;
+  nextYesStep();
 };
 
-/* NO button messages (constant) */
-const noMessages=[
-  "Inkosari alochinchu 😜 Chocolate chala unnayi naa daggara 🍫",
-  "Ayyo, chudandi chocolate ready 😎🍫",
-  "Nuvvu navvite life set 😁🍫",
-  "Siggu padindi chalu 😏, chocolate lekunda ra 😅"
+/* NO button funny messages */
+const noMessages = [
+  "Inkosari alochinchu choclates chala unnayi 🍫😜",
+  "1 YES touch chesthe chocolate vasthayi 😎🍫",
+  "Nuvvu navvithe naaku chocolate ivvali 😂"
 ];
-let noIndex=0;
 
-/* Show NO messages every 6 sec */
+let noIndex=0;
+/* Constant NO messages loop */
 setInterval(()=>{
   noMsgBox.textContent=noMessages[noIndex];
   noIndex=(noIndex+1)%noMessages.length;
 },6000);
 
+/* NO click also shows same messages but keeps button */
+noBtn.onclick = ()=>{
+  noMsgBox.textContent=noMessages[noIndex];
+  noIndex=(noIndex+1)%noMessages.length;
+};
+
 /* Emoji rain */
 setInterval(()=>{
-  const e=document.createElement("div");
+  const e = document.createElement("div");
   e.className="emoji";
-  e.innerText=Math.random()>0.5?"🍫":"❤️";
-  e.style.left=Math.random()*100+"vw";
+  e.innerText = Math.random()>0.5?"🍫":"❤️";
+  e.style.left = Math.random()*100+"vw";
   e.style.animationDuration=(3+Math.random()*3)+"s";
   document.body.appendChild(e);
   setTimeout(()=>e.remove(),6000);
 },300);
 
-/* Start YES sequence after page load */
-nextStep();
+/* Start YES sequence only after first YES click */
 </script>
 
 </body>
