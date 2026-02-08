@@ -68,44 +68,37 @@ button{
 <div id="message"></div>
 <div id="noMessage"></div>
 
+<audio id="song" src="song2.mp3" loop></audio>
+
 <script>
 const yesBtn = document.getElementById("yes");
 const noBtn = document.getElementById("no");
 const messageBox = document.getElementById("message");
 const noMsgBox = document.getElementById("noMessage");
+const song = document.getElementById("song");
+
+/* Start song on first user click (browser autoplay policy) */
+document.body.addEventListener("click",()=>{
+  song.play();
+},{once:true});
 
 /* YES sequence popups */
 const yesSteps=[
-  {text:"Navvithe chocolate istha 🍫😜", delay:1000, showYes:false},
-  {text:"Navvi unte YES meedha click chey 😉", delay:10000, showYes:true},
-  {text:"Inkosari navvithi 2 chocolates 🍫🍫", delay:1000, showYes:false},
-  {text:"Navvi unte YES kottu chocolates ready gaa unnayi 😎🍫", delay:10000, showYes:true},
-  {text:"I love you chepithe 10 chocolates ❤️🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫", delay:1000, showYes:false},
-  {text:"Chocolate ready unnayi twaraga YES click chey 😜", delay:5000, showYes:true},
-  {text:"Nuve chocolate laa unna neeku endhuku chocolate 😜 nenu ye ninnu thinestha 😂", delay:7000, showYes:false}
+  "Navvithe chocolate istha 🍫😜",
+  "Navvi unte YES meedha click chey 😉",
+  "Inkosari navvithi 2 chocolates 🍫🍫",
+  "Navvi unte YES kottu chocolates ready gaa unnayi 😎🍫",
+  "I love you chepithe 10 chocolates ❤️🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫",
+  "Chocolate ready unnayi twaraga YES click chey 😜",
+  "Nuve chocolate laa unna neeku endhuku chocolate 😜 nenu ye ninnu thinestha 😂"
 ];
-
 let yesIndex = 0;
 
-/* Function to show YES sequence */
-function nextYesStep(){
-  if(yesIndex >= yesSteps.length) return;
-  const step = yesSteps[yesIndex];
-  messageBox.textContent = step.text;
-
-  yesBtn.style.display = step.showYes ? "inline-block" : "none";
-
-  setTimeout(()=>{
-    yesIndex++;
-    nextYesStep();
-  }, step.delay);
-}
-
-/* YES click */
+/* YES click triggers next step */
 yesBtn.onclick = ()=>{
-  // Hide both buttons immediately
-  document.querySelector(".buttons").style.display="none";
-  nextYesStep();
+  if(yesIndex >= yesSteps.length) return;
+  messageBox.textContent = yesSteps[yesIndex];
+  yesIndex++;
 };
 
 /* NO button funny messages */
@@ -114,23 +107,14 @@ const noMessages = [
   "1 YES touch chesthe chocolate vasthayi 😎🍫",
   "Nuvvu navvithe naaku chocolate ivvali 😂"
 ];
-
 let noIndex=0;
 
-/* NO click triggers messages and hides buttons */
 noBtn.onclick = ()=>{
-  document.querySelector(".buttons").style.display="none"; // hide both buttons
   noMsgBox.textContent = noMessages[noIndex];
   noIndex=(noIndex+1)%noMessages.length;
-
-  // Start constant loop after clicking NO
-  setInterval(()=>{
-    noMsgBox.textContent = noMessages[noIndex];
-    noIndex=(noIndex+1)%noMessages.length;
-  },6000);
 };
 
-/* Emoji rain */
+/* Emoji rain always */
 setInterval(()=>{
   const e = document.createElement("div");
   e.className="emoji";
