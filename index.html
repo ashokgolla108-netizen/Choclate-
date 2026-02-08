@@ -13,29 +13,10 @@ body{
   text-align:center;
   color:#5a2d0c;
 }
-
-/* Titles */
-h1,h2{
-  text-shadow:0 3px 8px rgba(0,0,0,.3);
-}
-
-h1{
-  margin-top:20px;
-  font-size:2rem;
-}
-
-h2{
-  margin-top:30px;
-  font-size:1.8rem;
-}
-
-/* Buttons */
-.buttons{
-  margin-top:25px;
-  position:relative;
-  height:80px;
-}
-
+h1,h2{ text-shadow:0 3px 8px rgba(0,0,0,.3);}
+h1{margin-top:20px; font-size:2rem;}
+h2{margin-top:30px; font-size:1.8rem;}
+.buttons{ margin-top:25px; position:relative; height:80px;}
 button{
   padding:15px 30px;
   font-size:1.25rem;
@@ -44,20 +25,8 @@ button{
   cursor:pointer;
   margin:0 10px;
 }
-
-/* YES / NO buttons */
-#yes{
-  background:#ff0033;
-  color:white;
-  display:none;
-}
-
-#no{
-  background:white;
-  color:#ff0033;
-}
-
-/* Message box */
+#yes{ background:#ff0033; color:white; display:inline-block;}
+#no{ background:white; color:#ff0033; display:inline-block;}
 #message{
   font-size:1.6rem;
   margin:20px auto;
@@ -68,23 +37,18 @@ button{
   color:#5a2d0c;
   font-weight:bold;
 }
-
-/* NO message box */
 #noMessage{
   font-size:1.5rem;
   margin-top:15px;
   color:#5a2d0c;
   font-weight:bold;
 }
-
-/* Emojis */
 .emoji{
   position:fixed;
   bottom:-30px;
   font-size:28px;
   animation:floatUp linear forwards;
 }
-
 @keyframes floatUp{
   from{transform:translateY(0);opacity:1;}
   to{transform:translateY(-120vh);opacity:0;}
@@ -122,6 +86,7 @@ const yesSteps=[
 ];
 
 let yesIndex = 0;
+let yesRunning = false;
 
 /* Function to show YES sequence */
 function nextYesStep(){
@@ -129,11 +94,7 @@ function nextYesStep(){
   const step = yesSteps[yesIndex];
   messageBox.textContent = step.text;
 
-  if(step.showYes){
-    yesBtn.style.display = "inline-block";
-  }else{
-    yesBtn.style.display = "none";
-  }
+  yesBtn.style.display = step.showYes ? "inline-block" : "none";
 
   setTimeout(()=>{
     yesIndex++;
@@ -141,8 +102,8 @@ function nextYesStep(){
   }, step.delay);
 }
 
-/* YES click moves to next step immediately */
-yesBtn.onclick = () => {
+/* YES click */
+yesBtn.onclick = ()=>{
   yesIndex++;
   nextYesStep();
 };
@@ -155,16 +116,18 @@ const noMessages = [
 ];
 
 let noIndex=0;
-/* Constant NO messages loop */
-setInterval(()=>{
-  noMsgBox.textContent=noMessages[noIndex];
-  noIndex=(noIndex+1)%noMessages.length;
-},6000);
-
-/* NO click also shows same messages but keeps button */
+/* NO click triggers messages */
 noBtn.onclick = ()=>{
-  noMsgBox.textContent=noMessages[noIndex];
+  noMsgBox.textContent = noMessages[noIndex];
   noIndex=(noIndex+1)%noMessages.length;
+
+  if(!yesRunning){
+    yesRunning = true; // to prevent multiple intervals
+    setInterval(()=>{
+      noMsgBox.textContent = noMessages[noIndex];
+      noIndex=(noIndex+1)%noMessages.length;
+    },6000);
+  }
 };
 
 /* Emoji rain */
@@ -177,8 +140,6 @@ setInterval(()=>{
   document.body.appendChild(e);
   setTimeout(()=>e.remove(),6000);
 },300);
-
-/* Start YES sequence only after first YES click */
 </script>
 
 </body>
