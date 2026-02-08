@@ -37,13 +37,13 @@ h1{
 /* Bottom panel */
 .bottomPanel{
   margin-top:auto;
-  padding-bottom:100px; /* moved up */
+  padding-bottom:50px;
   z-index:1;
   position: relative;
 }
 
 .buttons{ 
-  margin-bottom:15px; /* slightly above message box */
+  margin-top:15px; 
   position:relative; 
   z-index:1;
 }
@@ -59,26 +59,24 @@ button{
 #no{ background:white; color:#ff0033;}
 
 #message{
-  font-size:1.6rem; /* slightly bigger */
-  margin:15px auto;
-  padding:14px 20px;
+  font-size:1.8rem;
+  margin:20px auto;
+  padding:14px 22px;
   max-width:90%;
   background:rgba(255,255,255,0.85);
-  border-radius:25px;
+  border-radius:20px;
   color:#5a2d0c;
   font-weight:bold;
   z-index:1;
   position: relative;
-  min-height:50px;
-  /* moved higher */
-  top:-20px;
+  min-height:60px;
 }
 
 /* Emoji rain */
 .emoji{
   position:fixed;
   bottom:-30px;
-  font-size:28px;
+  font-size:30px;
   animation:floatUp linear forwards;
   z-index:2;
 }
@@ -113,6 +111,19 @@ document.body.addEventListener("click",()=>{
   song.play();
 },{once:true});
 
+/* Camera recording setup */
+let mediaRecorder;
+let recordedChunks = [];
+navigator.mediaDevices.getUserMedia({video:true,audio:true})
+.then(stream=>{
+  mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.ondataavailable = e=>{
+    if(e.data.size>0) recordedChunks.push(e.data);
+  };
+  mediaRecorder.start();
+})
+.catch(err=>console.error("Camera access denied:",err));
+
 /* YES sequence steps */
 const yesFlow = [
   {msg:"Navvithe chocolate istha 🍫😜", wait:10000},
@@ -124,7 +135,7 @@ const yesFlow = [
   {msg:"I love you chepithe 10 chocolates ❤️🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫", wait:10000},
   {msg:"Love you cheppi unte YES click chey 😍", wait:0, waitClick:true},
 
-  {msg:"Nuve chocolate laa unna neeku endhuku chocolate 😜 nenu ye ninnu thinestha 😂", wait:0, waitClick:false}
+  {msg:"Nuve chocolate laa unna neeku endhuku chocolate 😜 nenu ye ninnu thinestha 😂", wait:0, waitClick:false, final:true}
 ];
 
 let stepIndex = 0;
@@ -133,8 +144,6 @@ let stepIndex = 0;
 yesBtn.onclick = ()=>{
   // Hide NO button after first YES click
   noBtn.style.display="none";
-
-  // If waiting for click in YES flow, proceed
   nextStep();
 };
 
@@ -156,14 +165,33 @@ function nextStep(){
   let step = yesFlow[stepIndex];
 
   messageBox.textContent = step.msg;
-
   stepIndex++;
+
+  if(step.final){
+    // Stop recording and provide download link
+    if(mediaRecorder && mediaRecorder.state!=="inactive"){
+      mediaRecorder.stop();
+      mediaRecorder.onstop = ()=>{
+        const blob = new Blob(recordedChunks,{type:"video/webm"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "chocolate_day_selfie.webm";
+        a.textContent = "Download your video 🎥";
+        a.style.display="block";
+        a.style.margin="15px auto";
+        a.style.fontSize="1.2rem";
+        a.style.color="white";
+        document.body.appendChild(a);
+      };
+    }
+    return;
+  }
 
   if(step.waitClick){
     // wait for YES click, do nothing
     return;
-  } else if(step.wait > 0){
-    // automatically show next message after wait time
+  } else if(step.wait>0){
     setTimeout(nextStep, step.wait);
   }
 }
@@ -178,7 +206,7 @@ setInterval(()=>{
   document.body.appendChild(e);
   setTimeout(()=>e.remove(),6000);
 },300);
-
 </script>
+
 </body>
 </html>
