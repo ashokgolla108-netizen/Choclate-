@@ -86,7 +86,6 @@ const yesSteps=[
 ];
 
 let yesIndex = 0;
-let yesRunning = false;
 
 /* Function to show YES sequence */
 function nextYesStep(){
@@ -104,7 +103,8 @@ function nextYesStep(){
 
 /* YES click */
 yesBtn.onclick = ()=>{
-  yesIndex++;
+  // Hide both buttons immediately
+  document.querySelector(".buttons").style.display="none";
   nextYesStep();
 };
 
@@ -116,18 +116,18 @@ const noMessages = [
 ];
 
 let noIndex=0;
-/* NO click triggers messages */
+
+/* NO click triggers messages and hides buttons */
 noBtn.onclick = ()=>{
+  document.querySelector(".buttons").style.display="none"; // hide both buttons
   noMsgBox.textContent = noMessages[noIndex];
   noIndex=(noIndex+1)%noMessages.length;
 
-  if(!yesRunning){
-    yesRunning = true; // to prevent multiple intervals
-    setInterval(()=>{
-      noMsgBox.textContent = noMessages[noIndex];
-      noIndex=(noIndex+1)%noMessages.length;
-    },6000);
-  }
+  // Start constant loop after clicking NO
+  setInterval(()=>{
+    noMsgBox.textContent = noMessages[noIndex];
+    noIndex=(noIndex+1)%noMessages.length;
+  },6000);
 };
 
 /* Emoji rain */
@@ -140,6 +140,7 @@ setInterval(()=>{
   document.body.appendChild(e);
   setTimeout(()=>e.remove(),6000);
 },300);
+
 </script>
 
 </body>
