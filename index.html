@@ -13,6 +13,10 @@ body{
   color:white;
   background: url('ashok1.jpg') no-repeat center center fixed;
   background-size: cover;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  height:100vh;
 }
 body::after{
   content:"";
@@ -22,23 +26,30 @@ body::after{
   z-index:0;
 }
 
-h1,h2{ 
+h1{ 
   text-shadow:0 3px 8px rgba(0,0,0,.5); 
   position: relative; 
   z-index:1;
+  margin-top:20px;
+  font-size:2rem;
 }
-h1{margin-top:20px; font-size:2rem;}
-h2{margin-top:30px; font-size:1.8rem;}
+
+/* Bottom panel */
+.bottomPanel{
+  margin-top:auto;
+  padding-bottom:30px;
+  z-index:1;
+  position: relative;
+}
 
 .buttons{ 
-  margin-top:25px; 
+  margin-top:15px; 
   position:relative; 
-  height:80px; 
   z-index:1;
 }
 button{
   padding:15px 30px;
-  font-size:1.25rem;
+  font-size:1.2rem;
   border:none;
   border-radius:50px;
   cursor:pointer;
@@ -48,18 +59,20 @@ button{
 #no{ background:white; color:#ff0033;}
 
 #message{
-  font-size:1.6rem;
-  margin:20px auto;
+  font-size:1.5rem;
+  margin:15px auto;
   padding:12px 18px;
   max-width:90%;
-  background:rgba(255,255,255,0.8);
+  background:rgba(255,255,255,0.85);
   border-radius:20px;
   color:#5a2d0c;
   font-weight:bold;
   z-index:1;
   position: relative;
+  min-height:50px;
 }
 
+/* Emoji rain */
 .emoji{
   position:fixed;
   bottom:-30px;
@@ -67,7 +80,6 @@ button{
   animation:floatUp linear forwards;
   z-index:2;
 }
-
 @keyframes floatUp{
   from{transform:translateY(0);opacity:1;}
   to{transform:translateY(-120vh);opacity:0;}
@@ -77,14 +89,14 @@ button{
 <body>
 
 <h1>Happy Chocolate Day ❤️</h1>
-<h2>Chocolate kavali ?</h2>
 
-<div class="buttons">
-  <button id="yes">Yes 🍫</button>
-  <button id="no">No 😜</button>
+<div class="bottomPanel">
+  <div class="buttons">
+    <button id="yes">Yes 🍫</button>
+    <button id="no">No 😜</button>
+  </div>
+  <div id="message"></div>
 </div>
-
-<div id="message"></div>
 
 <audio id="song" src="song2.mp3" loop></audio>
 
@@ -94,45 +106,67 @@ const noBtn = document.getElementById("no");
 const messageBox = document.getElementById("message");
 const song = document.getElementById("song");
 
-/* Start song on first click */
+/* Start song on first click anywhere */
 document.body.addEventListener("click",()=>{
   song.play();
 },{once:true});
 
-/* YES questions in sequence */
-const yesQuestions=[
-  "Navvithe chocolate istha 🍫😜",
-  "Inkosari navvithi 2 chocolates 🍫🍫",
-  "I love you chepithe 10 chocolates ❤️🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫",
-  "Nuve chocolate laa unna neeku endhuku chocolate 😜 nenu ye ninnu thinestha 😂"
-];
-let yesIndex=0;
+/* YES sequence steps */
+const yesFlow = [
+  {msg:"Navvithe chocolate istha 🍫😜", wait:10000},
+  {msg:"Navvi unte YES meedha click chey 😉", wait:0, waitClick:true},
 
-/* YES click triggers next question */
+  {msg:"Inkosari navvithi 2 chocolates 🍫🍫", wait:10000},
+  {msg:"Navvi unte YES kottu 😎🍫", wait:0, waitClick:true},
+
+  {msg:"I love you chepithe 10 chocolates ❤️🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫", wait:10000},
+  {msg:"Love you cheppi unte YES click chey 😍", wait:0, waitClick:true},
+
+  {msg:"Nuve chocolate laa unna neeku endhuku chocolate 😜 nenu ye ninnu thinestha 😂", wait:0, waitClick:false}
+];
+
+let stepIndex = 0;
+
+/* Handle YES button click */
 yesBtn.onclick = ()=>{
-  if(yesIndex < yesQuestions.length){
-    messageBox.textContent = yesQuestions[yesIndex];
-    yesIndex++;
-    
-    // Hide NO button after first YES
-    noBtn.style.display="none";
-  }
+  // Hide NO button after first YES click
+  noBtn.style.display="none";
+
+  // If waiting for click in YES flow, proceed
+  nextStep();
 };
 
-/* NO button funny messages */
+/* NO button messages */
 const noMessages = [
   "Inkosari alochinchu choclates chala unnayi 🍫😜",
   "1 YES touch chesthe chocolate vasthayi 😎🍫",
   "Nuvvu navvithe naaku chocolate ivvali 😂"
 ];
-let noIndex=0;
-
+let noIndex = 0;
 noBtn.onclick = ()=>{
   messageBox.textContent = noMessages[noIndex];
   noIndex=(noIndex+1)%noMessages.length;
 };
 
-/* Emoji rain always */
+/* Function to show next step */
+function nextStep(){
+  if(stepIndex >= yesFlow.length) return;
+  let step = yesFlow[stepIndex];
+
+  messageBox.textContent = step.msg;
+
+  stepIndex++;
+
+  if(step.waitClick){
+    // wait for YES click, do nothing
+    return;
+  } else if(step.wait > 0){
+    // automatically show next message after wait time
+    setTimeout(nextStep, step.wait);
+  }
+}
+
+/* Emoji rain */
 setInterval(()=>{
   const e = document.createElement("div");
   e.className="emoji";
@@ -144,6 +178,5 @@ setInterval(()=>{
 },300);
 
 </script>
-
 </body>
 </html>
