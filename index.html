@@ -8,15 +8,34 @@
 body{
   margin:0;
   font-family:'Poppins',sans-serif;
-  background:linear-gradient(135deg,#ffb347,#ffcc33);
   overflow:hidden;
   text-align:center;
-  color:#5a2d0c;
+  color:white;
+  background: url('ashok1.jpg') no-repeat center center fixed;
+  background-size: cover;
 }
-h1,h2{ text-shadow:0 3px 8px rgba(0,0,0,.3);}
+body::after{
+  content:"";
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.3);
+  z-index:0;
+}
+
+h1,h2{ 
+  text-shadow:0 3px 8px rgba(0,0,0,.5); 
+  position: relative; 
+  z-index:1;
+}
 h1{margin-top:20px; font-size:2rem;}
 h2{margin-top:30px; font-size:1.8rem;}
-.buttons{ margin-top:25px; position:relative; height:80px;}
+
+.buttons{ 
+  margin-top:25px; 
+  position:relative; 
+  height:80px; 
+  z-index:1;
+}
 button{
   padding:15px 30px;
   font-size:1.25rem;
@@ -25,30 +44,30 @@ button{
   cursor:pointer;
   margin:0 10px;
 }
-#yes{ background:#ff0033; color:white; display:inline-block;}
-#no{ background:white; color:#ff0033; display:inline-block;}
+#yes{ background:#ff0033; color:white;}
+#no{ background:white; color:#ff0033;}
+
 #message{
   font-size:1.6rem;
   margin:20px auto;
   padding:12px 18px;
   max-width:90%;
-  background:rgba(255,255,255,0.9);
+  background:rgba(255,255,255,0.8);
   border-radius:20px;
   color:#5a2d0c;
   font-weight:bold;
+  z-index:1;
+  position: relative;
 }
-#noMessage{
-  font-size:1.5rem;
-  margin-top:15px;
-  color:#5a2d0c;
-  font-weight:bold;
-}
+
 .emoji{
   position:fixed;
   bottom:-30px;
   font-size:28px;
   animation:floatUp linear forwards;
+  z-index:2;
 }
+
 @keyframes floatUp{
   from{transform:translateY(0);opacity:1;}
   to{transform:translateY(-120vh);opacity:0;}
@@ -66,7 +85,6 @@ button{
 </div>
 
 <div id="message"></div>
-<div id="noMessage"></div>
 
 <audio id="song" src="song2.mp3" loop></audio>
 
@@ -74,31 +92,31 @@ button{
 const yesBtn = document.getElementById("yes");
 const noBtn = document.getElementById("no");
 const messageBox = document.getElementById("message");
-const noMsgBox = document.getElementById("noMessage");
 const song = document.getElementById("song");
 
-/* Start song on first user click (browser autoplay policy) */
+/* Start song on first click */
 document.body.addEventListener("click",()=>{
   song.play();
 },{once:true});
 
-/* YES sequence popups */
-const yesSteps=[
+/* YES questions in sequence */
+const yesQuestions=[
   "Navvithe chocolate istha 🍫😜",
-  "Navvi unte YES meedha click chey 😉",
   "Inkosari navvithi 2 chocolates 🍫🍫",
-  "Navvi unte YES kottu chocolates ready gaa unnayi 😎🍫",
   "I love you chepithe 10 chocolates ❤️🍫🍫🍫🍫🍫🍫🍫🍫🍫🍫",
-  "Chocolate ready unnayi twaraga YES click chey 😜",
   "Nuve chocolate laa unna neeku endhuku chocolate 😜 nenu ye ninnu thinestha 😂"
 ];
-let yesIndex = 0;
+let yesIndex=0;
 
-/* YES click triggers next step */
+/* YES click triggers next question */
 yesBtn.onclick = ()=>{
-  if(yesIndex >= yesSteps.length) return;
-  messageBox.textContent = yesSteps[yesIndex];
-  yesIndex++;
+  if(yesIndex < yesQuestions.length){
+    messageBox.textContent = yesQuestions[yesIndex];
+    yesIndex++;
+    
+    // Hide NO button after first YES
+    noBtn.style.display="none";
+  }
 };
 
 /* NO button funny messages */
@@ -110,7 +128,7 @@ const noMessages = [
 let noIndex=0;
 
 noBtn.onclick = ()=>{
-  noMsgBox.textContent = noMessages[noIndex];
+  messageBox.textContent = noMessages[noIndex];
   noIndex=(noIndex+1)%noMessages.length;
 };
 
