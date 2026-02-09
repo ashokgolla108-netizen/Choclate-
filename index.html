@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chocolate Question ❤️</title>
+<title>Happy Chocolate Day ❤️</title>
 <style>
 body{
   margin:0;
@@ -22,6 +22,11 @@ h1{
   text-shadow:0 3px 8px rgba(0,0,0,.5); 
   margin-top:20px;
   font-size:2rem;
+}
+
+#question{
+  font-size:1.5rem;
+  margin-top:30px;
 }
 
 /* Bottom panel */
@@ -72,7 +77,8 @@ button{
 </head>
 <body>
 
-<h1 id="question">Chocolate kavala? 🍫</h1>
+<h1>Happy Chocolate Day ❤️</h1>
+<div id="question">Chocolate kavala? 🍫</div>
 
 <div class="bottomPanel">
   <div class="buttons">
@@ -114,9 +120,8 @@ let stepIndex = 0;
 
 /* Handle YES button click */
 yesBtn.onclick = ()=>{
-  // Hide NO button after first YES click
-  noBtn.style.display="none";
-  question.style.display="none"; // hide the initial question
+  noBtn.style.display="none"; // hide NO button
+  question.style.display="none"; // hide bottom question after YES flow starts
   nextStep();
 };
 
