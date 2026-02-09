@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Chocolate Day ❤️</title>
+<title>Chocolate Question ❤️</title>
 <style>
 body{
   margin:0;
@@ -11,7 +11,7 @@ body{
   overflow:hidden;
   text-align:center;
   color:white;
-  background: #ff6699; /* simple gradient/color instead of image */
+  background: linear-gradient(135deg,#ff6699,#ffcc66);
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
@@ -72,7 +72,7 @@ button{
 </head>
 <body>
 
-<h1>Happy Chocolate Day ❤️</h1>
+<h1 id="question">Chocolate kavala? 🍫</h1>
 
 <div class="bottomPanel">
   <div class="buttons">
@@ -89,6 +89,7 @@ const yesBtn = document.getElementById("yes");
 const noBtn = document.getElementById("no");
 const messageBox = document.getElementById("message");
 const song = document.getElementById("song");
+const question = document.getElementById("question");
 
 /* Start song on first click anywhere */
 document.body.addEventListener("click",()=>{
@@ -115,6 +116,7 @@ let stepIndex = 0;
 yesBtn.onclick = ()=>{
   // Hide NO button after first YES click
   noBtn.style.display="none";
+  question.style.display="none"; // hide the initial question
   nextStep();
 };
 
