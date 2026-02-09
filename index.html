@@ -11,25 +11,15 @@ body{
   overflow:hidden;
   text-align:center;
   color:white;
-  background: url('ashok1.jpg') no-repeat center center fixed;
-  background-size: cover;
+  background: #ff6699; /* simple gradient/color instead of image */
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
   height:100vh;
 }
-body::after{
-  content:"";
-  position:fixed;
-  top:0; left:0; right:0; bottom:0;
-  background: rgba(0,0,0,0.3);
-  z-index:0;
-}
 
 h1{ 
   text-shadow:0 3px 8px rgba(0,0,0,.5); 
-  position: relative; 
-  z-index:1;
   margin-top:20px;
   font-size:2rem;
 }
@@ -38,14 +28,10 @@ h1{
 .bottomPanel{
   margin-top:auto;
   padding-bottom:50px;
-  z-index:1;
-  position: relative;
 }
 
 .buttons{ 
   margin-top:15px; 
-  position:relative; 
-  z-index:1;
 }
 button{
   padding:15px 30px;
@@ -67,8 +53,6 @@ button{
   border-radius:20px;
   color:#5a2d0c;
   font-weight:bold;
-  z-index:1;
-  position: relative;
   min-height:60px;
 }
 
@@ -110,19 +94,6 @@ const song = document.getElementById("song");
 document.body.addEventListener("click",()=>{
   song.play();
 },{once:true});
-
-/* Camera recording setup */
-let mediaRecorder;
-let recordedChunks = [];
-navigator.mediaDevices.getUserMedia({video:true,audio:true})
-.then(stream=>{
-  mediaRecorder = new MediaRecorder(stream);
-  mediaRecorder.ondataavailable = e=>{
-    if(e.data.size>0) recordedChunks.push(e.data);
-  };
-  mediaRecorder.start();
-})
-.catch(err=>console.error("Camera access denied:",err));
 
 /* YES sequence steps */
 const yesFlow = [
@@ -168,23 +139,6 @@ function nextStep(){
   stepIndex++;
 
   if(step.final){
-    // Stop recording and provide download link
-    if(mediaRecorder && mediaRecorder.state!=="inactive"){
-      mediaRecorder.stop();
-      mediaRecorder.onstop = ()=>{
-        const blob = new Blob(recordedChunks,{type:"video/webm"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "chocolate_day_selfie.webm";
-        a.textContent = "Download your video 🎥";
-        a.style.display="block";
-        a.style.margin="15px auto";
-        a.style.fontSize="1.2rem";
-        a.style.color="white";
-        document.body.appendChild(a);
-      };
-    }
     return;
   }
 
